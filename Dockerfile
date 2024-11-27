@@ -8,4 +8,4 @@ ENV RDS_PASSWORD=defaultpassword
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java -jar -DRDS_USER=${RDS_USER} -DRDS_PASSWORD=${RDS_PASSWORD} app.jar"]
+ENTRYPOINT ["sh", "-c", "java -jar -DRDS_USER=${RDS_USER} -DRDS_PASSWORD=${RDS_PASSWORD} -Xms512m -Xmx1024m app.jar"]
