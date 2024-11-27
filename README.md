@@ -41,5 +41,5 @@ java -jar -DRDS_USER=유저명 -DRDS_PASSWORD=패스워드 build/libs/public-clo
 
 ### Docker HUB 로부터 pull 받아서 컨테이너로 실행하기
 ```bash
-docker run -d -p 원하는포트:8080 -e RDS_USER=유저명 -e RDS_PASSWORD=패스워드 -e kiel0103/2024-public-cloud-exam:태그
+docker run -d -p 원하는포트:8080 -e RDS_USER=유저명 -e RDS_PASSWORD=패스워드 kiel0103/2024-public-cloud-exam:태그
 ```
