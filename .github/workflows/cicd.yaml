@@ -2,6 +2,17 @@ on:
   push:
     branches: ['main']
 
+permissions:
+  id-token: 'write'  # OIDC를 통해 외부 클라우드와 인증에 사용
+  contents: 'read'   # Github 리포지토리의 콘텐츠에 대한 읽기 권한
+
+env:
+  AWS_REGION: 'ap-northeast-2'
+  ECS_TASK_DEFINITION: './ecs-task-def.json'
+  CONTAINER_NAME: 'public-cloud-exam-2024'
+  ECS_SERVICE_NAME: 'public-cloud-exam-2024-service-1'
+  ECS_CLUSTER_NAME: 'public-cloud-exam-2024'
+
 jobs:
   build-docker-image:
     runs-on: 'ubuntu-22.04'
@@ -32,7 +43,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: 'DockerHub Upload'
-        id: dockerhub-image
+        id: 'build-image'
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME}}
           DOCKER_HUB_REPOSITORY: '2024-public-cloud-exam'
@@ -42,3 +53,19 @@ jobs:
           docker tag $DOCKER_HUB_REPOSITORY:latest $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:$IMAGE_TAG
           docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:$IMAGE_TAG
           echo "image=$DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: 'push된 이미지로 ECS Task Definition revision 생성'
+        id: 'task-def'
+        uses: 'aws-actions/amazon-ecs-render-task-definition@v1'
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: 'Deploy ECS Task Definition'
+        uses: 'aws-actions/amazon-ecs-deploy-task-defination@v2'
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_NAME }}
+          cluster: ${{ env.ECS_CLUSTER_NAME }}
+          wait-for-service-stability: true
