@@ -12,8 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                     "http://localhost:3000",
-                    "http://www.yerimkim-domain.click:80",
-                    "https://www.yerimkim-domain.click:443"
+                    "http://www.yerimkim-domain.click",
+                    "https://www.yerimkim-domain.click"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true)
