@@ -1,3 +1,16 @@
+# 설명
+- public-cloud-exam 프로젝트의 Backend
+
+<br/>
+
+# 구조
+- DB : AWS RDS, MySQL
+- 이미지 저장소 : Docker HUB
+- 배포 도구 : Github Action
+- 서버 : AWS ECS
+
+<br/>
+
 # 실행 가이드
 ### windows cmd에서 실행하기
 ```bash
